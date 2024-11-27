@@ -19,7 +19,7 @@ def describe_image(image):
                 "content": [
                     {
                         "type": "text", 
-                        "text": "Descríbeme la imagen adjunta."
+                        "text": "Indicame una descripción de la imagen adjunta."
                     },
                     {
                         "type": "image_url",
@@ -60,7 +60,7 @@ def generar_variacion_dall2(image):
 def main():
 
     # Preguntar por el nombre de la imagen del logo
-    logo = input("Ingresa el nombre de la imagen del logo a variar (Ej: logo.png): ")
+    logo = input("Indica el nombre de la imagen que se modificará (Ej: logo.png): ")
 
     # Describir el logo usando Vision API
     descripcion, token = describe_image(logo)
@@ -70,12 +70,12 @@ def main():
     tokens_salida = token.completion_tokens
 
     # Crear las carpetas si no existen
-    os.makedirs("Tarea3-Grupo12/Script3/", exist_ok=True)
+    os.makedirs("Tarea3-Grupo2/cod3/", exist_ok=True)
 
     #Guardar la descripción en un archivo
-    with open("Tarea3-Grupo12/Script3/descripcion_logo.txt", "w") as f:
+    with open("Tarea3-Grupo2/cod3/descripcion_logo.txt", "w") as f:
         f.write(descripcion)
-    print(f"Descripción del logo guardada en Tarea3-Grupo12/Script3/descripcion_logo.txt")
+    print(f"Descripción del logo guardada en Tarea3-Grupo2/cod3/descripcion_logo.txt")
 
     # Crear un prompt para un text to image a partir de la descripción
     response = client.chat.completions.create(
@@ -105,18 +105,18 @@ def main():
     variacion_dalle2 = generar_variacion_dall2(logo)
 
     #Guardar la variación en un archivo
-    with open("Tarea3-Grupo12/Script3/variacion_dalle2.png", "wb") as f:
+    with open("Tarea3-Grupo2/cod3/variacion_dalle2.png", "wb") as f:
         f.write(base64.b64decode(variacion_dalle2.data[0].b64_json))
-    print(f"Variacion de la imagen generada con DALL-E 2 y guardada en Tarea3-Grupo12/Script3/variacion_dalle2.png")
+    print(f"Variacion de la imagen generada con DALL-E 2 y guardada en Tarea3-Grupo2/cod3/variacion_dalle2.png")
 
 
     # Generar variacion del logo usando DALL-E 3 y la descripción de la imagen de Vision
     variacion_dalle3 = generar_imagen_dalle3(prompt_imagen)
 
     #Guardar la variación en un archivo
-    with open("Tarea3-Grupo12/Script3/variacion_dalle3.png", "wb") as f:
+    with open("Tarea3-Grupo2/cod3/variacion_dalle3.png", "wb") as f:
         f.write(base64.b64decode(variacion_dalle3.data[0].b64_json))
-    print(f"Variacion de la imagen generada con DALL-E 3 guardada en Tarea3-Grupo12/Script3/variacion_dalle3.png")
+    print(f"Variacion de la imagen generada con DALL-E 3 guardada en Tarea3-Grupo2/cod3/variacion_dalle3.png")
 
     # Calcular los costos
     costo_tokens_entrada_completions = tokens_entrada * 0.00000125
@@ -141,9 +141,9 @@ def main():
     }
 
     # Guardar la información en un archivo JSON
-    with open("Tarea3-Grupo12/Script3/costos.json", "w") as f:
+    with open("Tarea3-Grupo2/cod3/costos.json", "w") as f:
         json.dump(costos, f, indent=4)
-    print(f"Costos guardados en Tarea3-Grupo12/Script3/costos.json")
+    print(f"Costos guardados en Tarea3-Grupo2/cod3/costos.json")
 
 if __name__ == "__main__":
     main()
