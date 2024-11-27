@@ -12,7 +12,7 @@ def generate_image(image: str, mask: str, description: str):
         model="dall-e-2",
         image=open(image, "rb"),
         mask=open(mask, "rb"),
-        prompt="Edita la imagen agregando lo siguiente:" +description,
+        prompt="Genera una imagen agregando lo siguiente:" +description,
         n=1,
         size="1024x1024",
         response_format="b64_json"
@@ -47,10 +47,10 @@ def create_transparency(image: str, section: str):
 def main():
 
     # Crear las carpetas si no existen
-    os.makedirs("Tarea3-Grupo12/Script2/", exist_ok=True)
+    os.makedirs("Tarea3-Grupo2/cod2/", exist_ok=True)
 
     # Se pide la imagen, la mascara y lo que se desea agregar
-    image = input("Ingrese la imagen del interior de tu casa a editar (Ej: living.png): ")
+    image = input("Ingrese la imagen del interior de una casa para modificar (Ej: living.png): ")
 
     # Se pide la sección a transparentar
     section = input("Ingrese la sección a transparentar (superior derecha, superior izquierda, inferior derecha, inferior izquierda): ")
@@ -63,16 +63,16 @@ def main():
     response = generate_image(image, mask, description)
     
     # Se guarda la imagen generada
-    with open("Tarea3-Grupo12/Script2/imagen_generada.png", "wb") as f:
+    with open("Tarea3-Grupo2/cod2/imagen_generada.png", "wb") as f:
         f.write(base64.b64decode(response.data[0].b64_json))
     
-    print("Imagen generada guardada en Tarea3-Grupo12/Script2/imagen_generada.png")
+    print("Imagen generada guardada en Tarea3-Grupo2/cod2/imagen_generada.png")
 
     # Crear un archivo JSON con la informacion del costo total
     data = {
         "Costo_total": "0,02"
     }
-    with open("Tarea3-Grupo12/Script2/costo.json", "w") as f:
+    with open("Tarea3-Grupo2/cod2/costo.json", "w") as f:
         json.dump(data, f)
     print("Archivo costo.json creado.")
 
