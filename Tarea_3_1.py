@@ -29,16 +29,14 @@ def ocr_boleta(image):
                     {
                         "type": "text", 
                         "text": """
-                            Te voy a entregar una foto de una boleta o un recibo. 
-                            Necesito que identifiques cada producto, su cantidad y su precio.
-                            Tambien debes identificar el total de la boleta.
-                            Esta información me la debes entregar como un JSON con la siguiente estructura:
+                            Te pasaré una foto de una boleta o voucher y necesito que identifiques cada producto, su cantidad y su precio.
+                            Adicionalmente, debes identificar el total de la boleta. La información que obtengas me la debes entregar como un JSON con la siguiente estructura:
                             {
                                 "productos": [
                                     {
-                                        "nombre": "Nombre del producto",
-                                        "cantidad": Cantidad del producto,
-                                        "precio": Precio del producto
+                                        "nombre": "Nombre producto",
+                                        "cantidad": Cantidad producto,
+                                        "precio": Valor producto
                                     },
                                     ...
                                 ],
@@ -73,10 +71,10 @@ def crear_imagen_producto(producto):
 def main():
 
     # Crear las carpetas si no existen
-    os.makedirs("Tarea3-Grupo12/Script1/", exist_ok=True)
+    os.makedirs("Tarea3-Grupo2/cod1/", exist_ok=True)
 
     # Preguntar por el nombre de la imagen de la boleta
-    imagen = input("Ingresa el nombre de la imagen de la boleta (Ej: boleta.png): ")
+    imagen = input("Ingresa el nombre de la boleta o voucher (Ej: boleta.png): ")
     descripcion, tokens = ocr_boleta(imagen)
     
     # Guardar los tokens usados
@@ -84,9 +82,9 @@ def main():
     tokens_salida = tokens.completion_tokens
 
     # Guardar la descripcion de Vision de la boleta en un archivo de texto
-    with open("Tarea3-Grupo12/Script1/descripcion_boleta.txt", "w") as f:
+    with open("Tarea3-Grupo2/cod1/descripcion_boleta.txt", "w") as f:
         f.write(descripcion)
-    print(f"Descripción entregada por Vision de la boleta guardada en Tarea3-Grupo12/Script1/descripcion_boleta.txt")
+    print(f"Descripción entregada por Vision de la boleta guardada en Tarea3-Grupo2/cod1/descripcion_boleta.txt")
 
     # Pide a la API de OPENAI que entregue el JSON de la descripcion de la boleta
     completion = client.beta.chat.completions.parse(
@@ -97,7 +95,7 @@ def main():
                 "content": [
                     {
                         "type": "text",
-                        "text": "Entregame un JSON de lo siguiente: " + descripcion
+                        "text": "Entregame el JSON de lo siguiente: " + descripcion
                     }
                 ]
             }
@@ -121,16 +119,16 @@ def main():
     formatted_json = json.dumps(json_dict, indent=4)
 
     # Guardar el JSON en un archivo
-    with open("Tarea3-Grupo12/Script1/boleta.json", "w") as f:
+    with open("Tarea3-Grupo2/cod1/boleta.json", "w") as f:
         f.write(formatted_json)
-    print(f"JSON de la boleta guardado en Tarea3-Grupo12/Script1/boleta.json")
+    print(f"JSON de la boleta guardado en Tarea3-Grupo2/cod1/boleta.json")
 
     # Para cada producto en la boleta, crear una imagen y guardarla.
     for producto in JSON_boleta.productos:
         response = crear_imagen_producto(producto.nombre)
         with open(f"Tarea3-Grupo12/Script1/{producto.nombre}.png", "wb") as f:
             f.write(base64.b64decode(response.data[0].b64_json))
-        print(f"Imagen del producto {producto.nombre} guardada en Tarea3-Grupo12/Script1/{producto.nombre}.png")
+        print(f"Imagen del producto {producto.nombre} guardada en Tarea3-Grupo2/cod1/{producto.nombre}.png")
 
     # Calcular los costos de los tokens
     token_totales_entrada = (tokens_entrada + tokens_json_entrada) * 0.00000125
@@ -148,9 +146,9 @@ def main():
     }
 
     # Guardar los costos en un archivo JSON
-    with open("Tarea3-Grupo12/Script1/costos.json", "w") as f:
+    with open("Tarea3-Grupo2/cod1/costos.json", "w") as f:
         json.dump(costos, f, indent=4)
-    print(f"Costos guardados en Tarea3-Grupo12/Script1/costos.json")
+    print(f"Costos guardados en Tarea3-Grupo2/cod1/costos.json")
 
 if __name__ == "__main__":
     main()
